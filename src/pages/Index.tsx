@@ -5,11 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BeltVisualizer } from "@/components/BeltVisualizer";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 
 const AVAILABLE_BELTS = [60, 66, 72, 78, 84, 90, 96, 102, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
 
 const Index = () => {
   const [mode, setMode] = useState<"find-belt" | "find-center">("find-belt");
+  const [unit, setUnit] = useState<"mm" | "inches">("mm");
   
   // Mode 1 inputs
   const [n1, setN1] = useState<string>("20");
@@ -22,6 +24,10 @@ const Index = () => {
   const [beltLength, setBeltLength] = useState<string>("120");
 
   const pitch = 5; // mm
+  const MM_TO_INCHES = 0.0393701;
+  
+  const convertToDisplay = (mm: number) => unit === "inches" ? mm * MM_TO_INCHES : mm;
+  const convertToMm = (value: number) => unit === "inches" ? value / MM_TO_INCHES : value;
 
   // Mode 1: Calculate ideal belt length and find closest
   const calculateMode1 = (): { 
@@ -33,7 +39,7 @@ const Index = () => {
   } | null => {
     const N1 = parseFloat(n1);
     const N2 = parseFloat(n2);
-    const C = parseFloat(desiredCenter);
+    const C = convertToMm(parseFloat(desiredCenter));
     
     if (isNaN(N1) || isNaN(N2) || isNaN(C) || N1 <= 0 || N2 <= 0 || C <= 0) {
       return null;
@@ -100,6 +106,15 @@ const Index = () => {
         <header className="text-center space-y-2">
           <h1 className="text-4xl font-bold text-foreground">VEX Belt Calculator</h1>
           <p className="text-muted-foreground">HTD 5mm Pitch Timing Belt Calculator</p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <Label htmlFor="unit-toggle" className="text-sm">mm</Label>
+            <Switch
+              id="unit-toggle"
+              checked={unit === "inches"}
+              onCheckedChange={(checked) => setUnit(checked ? "inches" : "mm")}
+            />
+            <Label htmlFor="unit-toggle" className="text-sm">inches</Label>
+          </div>
         </header>
 
         <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)} className="w-full">
@@ -141,7 +156,7 @@ const Index = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="center">Center Distance (mm)</Label>
+                    <Label htmlFor="center">Center Distance ({unit})</Label>
                     <Input
                       id="center"
                       type="number"
@@ -149,7 +164,7 @@ const Index = () => {
                       onChange={(e) => setDesiredCenter(e.target.value)}
                       min="0"
                       step="0.1"
-                      placeholder="200"
+                      placeholder={unit === "mm" ? "200" : "7.87"}
                     />
                   </div>
                 </div>
@@ -168,7 +183,7 @@ const Index = () => {
                       <div className="p-4 rounded-lg bg-secondary">
                         <p className="text-sm text-muted-foreground mb-1">Error</p>
                         <div className="flex items-center gap-2">
-                          <p className="text-2xl font-bold">{Math.abs(result1.error).toFixed(1)} mm</p>
+                          <p className="text-2xl font-bold">{convertToDisplay(Math.abs(result1.error)).toFixed(unit === "mm" ? 1 : 3)} {unit}</p>
                           <Badge 
                             variant={
                               result1.status === "good" ? "default" : 
@@ -249,7 +264,7 @@ const Index = () => {
                   <div className="space-y-4 pt-4 border-t">
                     <div className="p-4 rounded-lg bg-primary/10">
                       <p className="text-sm text-muted-foreground mb-1">Center-to-Center Distance</p>
-                      <p className="text-3xl font-bold text-primary">{result2.centerDistance.toFixed(1)} mm</p>
+                      <p className="text-3xl font-bold text-primary">{convertToDisplay(result2.centerDistance).toFixed(unit === "mm" ? 1 : 3)} {unit}</p>
                     </div>
                   </div>
                 )}
