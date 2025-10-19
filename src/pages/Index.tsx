@@ -7,7 +7,7 @@ import { BeltVisualizer } from "@/components/BeltVisualizer";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 
-const AVAILABLE_BELTS = [60, 66, 72, 78, 84, 90, 96, 102, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
+const AVAILABLE_BELTS = [60, 70, 80, 90, 100, 104, 110, 120, 130, 140, 150, 160, 170, 180, 170, 200, 225, 250];
 
 const Index = () => {
   const [mode, setMode] = useState<"find-belt" | "find-center">("find-belt");
@@ -284,7 +284,7 @@ const Index = () => {
 
         <Card className="bg-muted/50">
           <CardHeader>
-            <CardTitle className="text-lg">Available Belt Sizes</CardTitle>
+            <CardTitle className="text-lg">15mm Belt Sizes</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
@@ -295,6 +295,7 @@ const Index = () => {
               ))}
             </div>
           </CardContent>
+          <a className="" href=""> link </a>
         </Card>
       </div>
     </div>
