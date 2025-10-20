@@ -2,20 +2,19 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BeltVisualizer } from "@/components/BeltVisualizer";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
-const AVAILABLE_BELTS = [60, 70, 80, 90, 100, 104, 110, 120, 130, 140, 150, 160, 170, 180, 170, 200, 225, 250];
-
-const HTD_THIN_BELTS = [];
-const HTD_THICK_BELTS = [60, 70, 80, 90, 100, 104, 110, 120, 130, 140, 150, 160, 170, 180, 170, 200, 225, 250];
-const GT_BELTS = [];
+const HTD_THIN_BELTS = [60, 66, 72, 78, 84, 90, 96, 102, 110, 120, 130, 140];
+const HTD_THICK_BELTS = [60, 70, 80, 90, 100, 104, 110, 120, 130, 140, 150, 160, 170, 180, 200, 225, 250];
+const GT_BELTS = [60, 80, 100, 110, 120, 150, 160, 180, 188, 200, 280, 300, 400];
 
 const Index = () => {
   const [mode, setMode] = useState<"find-belt" | "find-center">("find-belt");
   const [unit, setUnit] = useState<"mm" | "inches">("mm");
+  const [beltType, setBeltType] = useState<"HTD_THIN" | "HTD_THICK" | "GT">("HTD_THICK");
   
   // Mode 1 inputs
   const [n1, setN1] = useState<string>("20");
@@ -32,6 +31,19 @@ const Index = () => {
   
   const convertToDisplay = (mm: number) => unit === "inches" ? mm * MM_TO_INCHES : mm;
   const convertToMm = (value: number) => unit === "inches" ? value / MM_TO_INCHES : value;
+
+  const getAvailableBelts = () => {
+    switch (beltType) {
+      case "HTD_THIN":
+        return HTD_THIN_BELTS;
+      case "HTD_THICK":
+        return HTD_THICK_BELTS;
+      case "GT":
+        return GT_BELTS;
+      default:
+        return HTD_THICK_BELTS;
+    }
+  };
 
   // Mode 1: Calculate ideal belt length and find closest
   const calculateMode1 = (): { 
@@ -53,7 +65,8 @@ const Index = () => {
     const Lt = (2 * C / pitch) + ((N1 + N2) / 2) + (Math.pow(N2 - N1, 2) / (4 * Math.PI * Math.PI * (C / pitch)));
     
     // Find closest available belt
-    const closest = AVAILABLE_BELTS.reduce((prev, curr) => 
+    const availableBelts = getAvailableBelts();
+    const closest = availableBelts.reduce((prev, curr) => 
       Math.abs(curr - Lt) < Math.abs(prev - Lt) ? curr : prev
     );
     
@@ -105,29 +118,27 @@ const Index = () => {
   const result2 = calculateMode2();
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <header className="text-center space-y-2">
-          <h1 className="text-4xl font-bold text-foreground">VEX Belt Calculator</h1>
-          <p className="text-muted-foreground">HTD 5mm Pitch Timing Belt Calculator</p>
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <Label htmlFor="unit-toggle" className="text-sm">mm</Label>
-            <Switch
-              id="unit-toggle"
-              checked={unit === "inches"}
-              onCheckedChange={(checked) => setUnit(checked ? "inches" : "mm")}
-            />
-            <Label htmlFor="unit-toggle" className="text-sm">inches</Label>
-          </div>
-        </header>
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar 
+          mode={mode}
+          onModeChange={setMode}
+          unit={unit}
+          onUnitChange={setUnit}
+          beltType={beltType}
+          onBeltTypeChange={setBeltType}
+        />
+        <SidebarInset className="flex-1">
+          <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4">
+            <SidebarTrigger />
+            <div className="flex-1">
+              <h1 className="text-xl font-bold">VEX Belt Calculator</h1>
+            </div>
+          </header>
 
-        <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="find-belt">Find Belt Size</TabsTrigger>
-            <TabsTrigger value="find-center">Find Center Distance</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="find-belt" className="space-y-6">
+          <div className="flex-1 space-y-6 p-6">
+            {mode === "find-belt" && (
+              <div className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Find Closest Belt Size</CardTitle>
@@ -217,9 +228,11 @@ const Index = () => {
                 status={result1.status}
               />
             )}
-          </TabsContent>
+              </div>
+            )}
 
-          <TabsContent value="find-center" className="space-y-6">
+            {mode === "find-center" && (
+              <div className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Find Center-to-Center Distance</CardTitle>
@@ -283,25 +296,27 @@ const Index = () => {
                 status={result2.status}
               />
             )}
-          </TabsContent>
-        </Tabs>
+              </div>
+            )}
 
-        <Card className="bg-muted/50">
-          <CardHeader>
-            <CardTitle className="text-lg">15mm Belt Sizes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {AVAILABLE_BELTS.map((size) => (
-                <Badge key={size} variant="outline">
-                  {size}T
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+            <Card className="bg-muted/50">
+              <CardHeader>
+                <CardTitle className="text-lg">Available Belt Sizes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {getAvailableBelts().map((size, index) => (
+                    <Badge key={`${size}-${index}`} variant="outline">
+                      {size}T
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </SidebarInset>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
