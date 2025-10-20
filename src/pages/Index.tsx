@@ -9,6 +9,10 @@ import { Switch } from "@/components/ui/switch";
 
 const AVAILABLE_BELTS = [60, 70, 80, 90, 100, 104, 110, 120, 130, 140, 150, 160, 170, 180, 170, 200, 225, 250];
 
+const HTD_THIN_BELTS = [];
+const HTD_THICK_BELTS = [60, 70, 80, 90, 100, 104, 110, 120, 130, 140, 150, 160, 170, 180, 170, 200, 225, 250];
+const GT_BELTS = [];
+
 const Index = () => {
   const [mode, setMode] = useState<"find-belt" | "find-center">("find-belt");
   const [unit, setUnit] = useState<"mm" | "inches">("mm");
@@ -295,7 +299,6 @@ const Index = () => {
               ))}
             </div>
           </CardContent>
-          <a className="" href=""> link </a>
         </Card>
       </div>
     </div>
