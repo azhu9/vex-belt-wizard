@@ -202,16 +202,16 @@ const Index = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="p-4 rounded-lg bg-secondary">
                         <p className="text-sm text-muted-foreground mb-1">Ideal Belt Length</p>
-                        <p className="text-2xl font-bold">{result1.idealLength.toFixed(1)} T</p>
+                        <p className="text-3xl font-bold">{result1.idealLength.toFixed(1)} T</p>
                       </div>
                       <div className="p-4 rounded-lg bg-primary/10">
                         <p className="text-sm text-muted-foreground mb-1">Closest Available</p>
-                        <p className="text-2xl font-bold text-primary">{result1.closestBelt} T</p>
+                        <p className="text-3xl font-bold text-primary">{result1.closestBelt} T</p>
                       </div>
                       <div className="p-4 rounded-lg bg-secondary">
                         <p className="text-sm text-muted-foreground mb-1">Error</p>
                         <div className="flex items-center gap-2">
-                          <p className="text-2xl font-bold">{convertToDisplay(Math.abs(result1.error)).toFixed(unit === "mm" ? 1 : 3)} {unit}</p>
+                          <p className="text-3xl font-bold">{convertToDisplay(Math.abs(result1.error)).toFixed(unit === "mm" ? 1 : 3)} {unit}</p>
                           <Badge 
                             variant={
                               result1.status === "good" ? "default" : 
@@ -336,7 +336,7 @@ const Index = () => {
             {mode === "find-center" && (
               <Card className="bg-muted/50">
                 <CardHeader>
-                  <CardTitle className="text-lg">Available {getBeltName()} sizes</CardTitle>
+                  <CardTitle className="text-lg">{getBeltName()} sizes</CardTitle>
                   <CardDescription>Click a size to select it</CardDescription>
                 </CardHeader>
                 <CardContent>
