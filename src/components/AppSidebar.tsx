@@ -1,4 +1,5 @@
-import { Settings, Calculator, Ruler, Info } from "lucide-react";
+import { Settings, Calculator, Ruler, Info, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 import {
   Sidebar,
   SidebarContent,
@@ -8,6 +9,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Label } from "@/components/ui/label";
@@ -25,6 +27,7 @@ interface AppSidebarProps {
 
 export function AppSidebar({ mode, onModeChange, unit, onUnitChange, beltType, onBeltTypeChange }: AppSidebarProps) {
   const { open } = useSidebar();
+  const { theme, setTheme } = useTheme();
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -86,6 +89,29 @@ export function AppSidebar({ mode, onModeChange, unit, onUnitChange, beltType, o
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              tooltip="Toggle theme"
+            >
+              {theme === "dark" ? (
+                <>
+                  <Sun className="h-4 w-4" />
+                  <span>Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="h-4 w-4" />
+                  <span>Dark Mode</span>
+                </>
+              )}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
