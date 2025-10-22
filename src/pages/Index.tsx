@@ -32,6 +32,18 @@ const Index = () => {
   const convertToDisplay = (mm: number) => unit === "inches" ? mm * MM_TO_INCHES : mm;
   const convertToMm = (value: number) => unit === "inches" ? value / MM_TO_INCHES : value;
 
+  const getBeltName = () => {
+    switch (beltType){
+      case "HTD_THIN":
+        return "HTD 9mm Thickness";
+      case "HTD_THICK":
+        return "HTD 15mm Thickness";
+      case "GT":
+        return "GT2 9mm Thickness";
+    }
+
+  }
+
   const getAvailableBelts = () => {
     switch (beltType) {
       case "HTD_THIN":
@@ -301,12 +313,12 @@ const Index = () => {
 
             <Card className="bg-muted/50">
               <CardHeader>
-                <CardTitle className="text-lg">Available Belt Sizes</CardTitle>
+                <CardTitle className="text-lg">{getBeltName()} sizes</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {getAvailableBelts().map((size, index) => (
-                    <Badge key={`${size}-${index}`} variant="outline">
+                    <Badge key={`${size}-${index}`} variant={size === result1.closestBelt ? "default" : "outline"} >
                       {size}T
                     </Badge>
                   ))}

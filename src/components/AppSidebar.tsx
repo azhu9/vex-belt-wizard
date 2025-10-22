@@ -27,7 +27,7 @@ export function AppSidebar({ mode, onModeChange, unit, onUnitChange, beltType, o
   const { open } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="offcanvas">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Calculator Mode</SidebarGroupLabel>
@@ -65,9 +65,9 @@ export function AppSidebar({ mode, onModeChange, unit, onUnitChange, beltType, o
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="HTD_THIN">HTD Thin (9mm)</SelectItem>
-                  <SelectItem value="HTD_THICK">HTD Thick (15mm)</SelectItem>
-                  <SelectItem value="GT">GT2 Belt</SelectItem>
+                  <SelectItem value="HTD_THIN">HTD 9mm</SelectItem>
+                  <SelectItem value="HTD_THICK">HTD 15mm</SelectItem>
+                  <SelectItem value="GT">GT2 9mm</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -83,22 +83,6 @@ export function AppSidebar({ mode, onModeChange, unit, onUnitChange, beltType, o
                 <span className="text-sm">inches</span>
               </div>
             </div>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Resources</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="https://www.vexrobotics.com/" target="_blank" rel="noopener noreferrer">
-                    <Info className="h-4 w-4" />
-                    <span>VEX Documentation</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
