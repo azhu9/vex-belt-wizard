@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BeltVisualizer } from "@/components/BeltVisualizer";
 import { Badge } from "@/components/ui/badge";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
@@ -278,14 +279,18 @@ const Index = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="belt">Belt Length (teeth)</Label>
-                    <Input
-                      id="belt"
-                      type="number"
-                      value={beltLength}
-                      onChange={(e) => setBeltLength(e.target.value)}
-                      min="1"
-                      placeholder="120"
-                    />
+                    <Select value={beltLength} onValueChange={setBeltLength}>
+                      <SelectTrigger id="belt">
+                        <SelectValue placeholder="Select belt size" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getAvailableBelts().map((size) => (
+                          <SelectItem key={size} value={size.toString()}>
+                            {size}T
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -311,20 +316,45 @@ const Index = () => {
               </div>
             )}
 
-            <Card className="bg-muted/50">
-              <CardHeader>
-                <CardTitle className="text-lg">{getBeltName()} sizes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {getAvailableBelts().map((size, index) => (
-                    <Badge key={`${size}-${index}`} variant={size === result1.closestBelt ? "default" : "outline"} >
-                      {size}T
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            {mode === "find-belt" && (
+              <Card className="bg-muted/50">
+                <CardHeader>
+                  <CardTitle className="text-lg">{getBeltName()} sizes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {getAvailableBelts().map((size, index) => (
+                      <Badge key={`${size}-${index}`} variant={size === result1?.closestBelt ? "default" : "outline"}>
+                        {size}T
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {mode === "find-center" && (
+              <Card className="bg-muted/50">
+                <CardHeader>
+                  <CardTitle className="text-lg">Available {getBeltName()} sizes</CardTitle>
+                  <CardDescription>Click a size to select it</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {getAvailableBelts().map((size, index) => (
+                      <Badge 
+                        key={`${size}-${index}`} 
+                        variant={size.toString() === beltLength ? "default" : "outline"}
+                        className="cursor-pointer hover:bg-primary/80 transition-colors"
+                        onClick={() => setBeltLength(size.toString())}
+                      >
+                        {size}T
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </SidebarInset>
       </div>
