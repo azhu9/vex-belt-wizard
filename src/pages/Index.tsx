@@ -7,13 +7,14 @@ import { BeltVisualizer } from "@/components/BeltVisualizer";
 import { Badge } from "@/components/ui/badge";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { TrianglePlanner } from "@/components/TrianglePlanner";
 
 const HTD_THIN_BELTS = [60, 66, 72, 78, 84, 90, 96, 102, 110, 120, 130, 140];
 const HTD_THICK_BELTS = [60, 70, 80, 90, 100, 104, 110, 120, 130, 140, 150, 160, 170, 180, 200, 225, 250];
 const GT_BELTS = [60, 80, 100, 110, 120, 150, 160, 180, 188, 200, 280, 300, 400];
 
 const Index = () => {
-  const [mode, setMode] = useState<"find-belt" | "find-center">("find-belt");
+  const [mode, setMode] = useState<"find-belt" | "find-center" | "triangle">("find-belt");
   const [unit, setUnit] = useState<"mm" | "inches">("mm");
   const [beltType, setBeltType] = useState<"HTD_THIN" | "HTD_THICK" | "GT">("HTD_THICK");
   
@@ -26,6 +27,9 @@ const Index = () => {
   const [n1Mode2, setN1Mode2] = useState<string>("20");
   const [n2Mode2, setN2Mode2] = useState<string>("40");
   const [beltLength, setBeltLength] = useState<string>("120");
+
+  // Three-pulley mode
+  const [triBeltLength, setTriBeltLength] = useState<string>("110");
 
   const pitch = 5; // mm
   const MM_TO_INCHES = 0.0393701;
@@ -316,6 +320,16 @@ const Index = () => {
               </div>
             )}
 
+            {mode === "triangle" && (
+              <TrianglePlanner
+                unit={unit}
+                pitch={pitch}
+                belts={getAvailableBelts()}
+                beltLength={triBeltLength}
+                onBeltLengthChange={setTriBeltLength}
+              />
+            )}
+
             {mode === "find-belt" && (
               <Card className="bg-muted/50">
                 <CardHeader>
@@ -333,7 +347,7 @@ const Index = () => {
               </Card>
             )}
 
-            {mode === "find-center" && (
+            {(mode === "find-center" || mode === "triangle") && (
               <Card className="bg-muted/50">
                 <CardHeader>
                   <CardTitle className="text-lg">{getBeltName()} sizes</CardTitle>
@@ -344,9 +358,9 @@ const Index = () => {
                     {getAvailableBelts().map((size, index) => (
                       <Badge 
                         key={`${size}-${index}`} 
-                        variant={size.toString() === beltLength ? "default" : "outline"}
+                        variant={size.toString() === (mode === "triangle" ? triBeltLength : beltLength) ? "default" : "outline"}
                         className="cursor-pointer hover:bg-primary/80 transition-colors"
-                        onClick={() => setBeltLength(size.toString())}
+                        onClick={() => (mode === "triangle" ? setTriBeltLength : setBeltLength)(size.toString())}
                       >
                         {size}T
                       </Badge>

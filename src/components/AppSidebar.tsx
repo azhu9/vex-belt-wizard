@@ -1,4 +1,4 @@
-import { Settings, Calculator, Ruler, Info, Moon, Sun } from "lucide-react";
+import { Settings, Calculator, Ruler, Info, Moon, Sun, Triangle } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
   Sidebar,
@@ -17,8 +17,8 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface AppSidebarProps {
-  mode: "find-belt" | "find-center";
-  onModeChange: (mode: "find-belt" | "find-center") => void;
+  mode: "find-belt" | "find-center" | "triangle";
+  onModeChange: (mode: "find-belt" | "find-center" | "triangle") => void;
   unit: "mm" | "inches";
   onUnitChange: (unit: "mm" | "inches") => void;
   beltType: "HTD_THIN" | "HTD_THICK" | "GT";
@@ -52,6 +52,15 @@ export function AppSidebar({ mode, onModeChange, unit, onUnitChange, beltType, o
                 >
                   <Ruler className="h-4 w-4" />
                   <span>Find Center Distance</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={mode === "triangle"}
+                  onClick={() => onModeChange("triangle")}
+                >
+                  <Triangle className="h-4 w-4" />
+                  <span>Three-Pulley Layout</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
